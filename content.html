@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content - CreatorVault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FFF8FC;
+            color: #111827;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 248, 252, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(236, 72, 153, 0.1);
+            padding: 1.25rem 2rem;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #EC4899;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .navbar-menu a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            color: #EC4899;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 0.4rem;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #111827;
+            border-radius: 2px;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #FFF8FC;
+            box-shadow: -4px 0 20px rgba(236, 72, 153, 0.15);
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            z-index: 99;
+            transition: right 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-close {
+            align-self: flex-end;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #111827;
+            border: none;
+            background: none;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-menu a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 1rem 0;
+            border-bottom: 1px solid #F9A8D4;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 98;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid #F9A8D4;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button.active {
+            color: #EC4899;
+            border-bottom-color: #EC4899;
+        }
+
+        .tab-button:hover {
+            color: #EC4899;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(236, 72, 153, 0.15);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #EC4899 0%, #F9A8D4 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image.blurred img {
+            filter: blur(8px);
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #EC4899;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .lock-icon {
+            font-size: 2.5rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .upgrade-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .no-content {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6B7280;
+            font-size: 1.125rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #F9A8D4;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #6B7280;
+            margin-top: 4rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #EC4899;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .tabs {
+                gap: 1rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">CreatorVault</a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="content.html">Content</a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
+        <a href="index.html">Home</a>
+        <a href="content.html">Content</a>
+        <a href="account.html">Account</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="page-title">Content Library</h1>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="photos">Photos</button>
+            <button class="tab-button" data-tab="videos">Videos</button>
+        </div>
+
+        <!-- Photos Tab -->
+        <div id="photos" class="tab-content active">
+            <div class="content-grid" id="photosGrid">
+                <div class="no-content">Loading photos...</div>
+            </div>
+        </div>
+
+        <!-- Videos Tab -->
+        <div id="videos" class="tab-content">
+            <div class="content-grid" id="videosGrid">
+                <div class="no-content">Loading videos...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">CreatorVault</div>
+        <div style="font-size: 0.95rem; margin-bottom: 1.5rem;">Premium content platform for creators</div>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+
+        // Mobile Menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            mobileOverlay.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+        });
+
+        mobileOverlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+        });
+
+        // Tab Switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tabName = e.target.getAttribute('data-tab');
+                
+                // Remove active from all buttons and content
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active to clicked button and corresponding content
+                e.target.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Get session
+        function getSession() {
+            const session = localStorage.getItem('session');
+            return session ? JSON.parse(session) : null;
+        }
+
+        // Create Card HTML
+        function createPhotoCard(photo) {
+            const session = getSession();
+            const isPremium = photo.premium;
+            const userIsPremium = session?.membership === 'premium';
+            const isBlurred = isPremium && !userIsPremium;
+
+            return `
+                <div class="content-card">
+                    <div class="card-image ${isBlurred ? 'blurred' : ''}">
+                        <img src="${photo.url}" alt="${photo.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3C/svg%3E'">
+                        ${isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
+                        ${isBlurred ? '<div class="lock-overlay"><div class="lock-icon">🔒</div></div>' : ''}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${photo.title}</div>
+                        ${isBlurred ? '<button class="upgrade-btn" onclick="window.location.href=\'account.html\'">Upgrade Now</button>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createVideoCard(video) {
+            const session = getSession();
+            const isPremium = video.premium;
+            const userIsPremium = session?.membership === 'premium';
+            const isBlurred = isPremium && !userIsPremium;
+
+            return `
+                <div class="content-card">
+                    <div class="card-image ${isBlurred ? 'blurred' : ''}">
+                        <img src="${video.thumbnail_url}" alt="${video.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22400%22 height=%22300%22/%3E%3C/svg%3E'">
+                        ${isPremium ? '<div class="premium-badge">PREMIUM</div>' : ''}
+                        <div class="duration-badge">${video.duration}s</div>
+                        ${isBlurred ? '<div class="lock-overlay"><div class="lock-icon">🔒</div></div>' : ''}
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${video.title}</div>
+                        ${isBlurred ? '<button class="upgrade-btn" onclick="window.location.href=\'account.html\'">Upgrade Now</button>' : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load Photos
+        async function loadPhotos() {
+            try {
+                const photosRes = await fetch(`${SUPABASE_URL}/rest/v1/photos?order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const photos = await photosRes.json();
+                const photosGrid = document.getElementById('photosGrid');
+
+                if (photos.length === 0) {
+                    photosGrid.innerHTML = '<div class="no-content">No photos available.</div>';
+                    return;
+                }
+
+                photosGrid.innerHTML = photos.map(photo => createPhotoCard(photo)).join('');
+            } catch (error) {
+                console.error('Error loading photos:', error);
+                document.getElementById('photosGrid').innerHTML = '<div class="no-content">Error loading photos.</div>';
+            }
+        }
+
+        // Load Videos
+        async function loadVideos() {
+            try {
+                const videosRes = await fetch(`${SUPABASE_URL}/rest/v1/videos?order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const videos = await videosRes.json();
+                const videosGrid = document.getElementById('videosGrid');
+
+                if (videos.length === 0) {
+                    videosGrid.innerHTML = '<div class="no-content">No videos available.</div>';
+                    return;
+                }
+
+                videosGrid.innerHTML = videos.map(video => createVideoCard(video)).join('');
+            } catch (error) {
+                console.error('Error loading videos:', error);
+                document.getElementById('videosGrid').innerHTML = '<div class="no-content">Error loading videos.</div>';
+            }
+        }
+
+        // Initialize
+        loadPhotos();
+        loadVideos();
+    </script>
+</body>
+</html>
