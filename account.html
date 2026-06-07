@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - CreatorVault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FFF8FC;
+            color: #111827;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 248, 252, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(236, 72, 153, 0.1);
+            padding: 1.25rem 2rem;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #EC4899;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .navbar-menu a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            color: #EC4899;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 0.4rem;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #111827;
+            border-radius: 2px;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #FFF8FC;
+            box-shadow: -4px 0 20px rgba(236, 72, 153, 0.15);
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            z-index: 99;
+            transition: right 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-close {
+            align-self: flex-end;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #111827;
+            border: none;
+            background: none;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-menu a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 1rem 0;
+            border-bottom: 1px solid #F9A8D4;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 98;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid #F9A8D4;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+        }
+
+        .tab-button.active {
+            color: #EC4899;
+            border-bottom-color: #EC4899;
+        }
+
+        .tab-button:hover {
+            color: #EC4899;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid #F9A8D4;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #EC4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            box-shadow: 0 8px 30px rgba(236, 72, 153, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #EC4899;
+            border: 2px solid #EC4899;
+        }
+
+        .btn-secondary:hover {
+            background: #FFF8FC;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: #F87171;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #DC2626;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #7F1D1D;
+            border: 1px solid #FCA5A5;
+        }
+
+        .success-message {
+            display: none;
+        }
+
+        .error-message {
+            display: none;
+        }
+
+        /* Membership Grid */
+        .membership-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-8px);
+            border-color: #EC4899;
+            box-shadow: 0 20px 50px rgba(236, 72, 153, 0.2);
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .plan-price {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-features {
+            text-align: left;
+            margin-bottom: 1.5rem;
+            color: #6B7280;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .plan-features li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+        }
+
+        .dashboard-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dashboard-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .dashboard-value.premium {
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Payments Table */
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+        }
+
+        .payments-table th {
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .payments-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #F9A8D4;
+        }
+
+        .payments-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #6B7280;
+        }
+
+        /* Payment Form */
+        .payment-info {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            background: #F9F5FF;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #6B7280;
+        }
+
+        .qr-code img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .payment-details {
+            background: #FFF8FC;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .payment-detail-label {
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .payment-detail-value {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #F9A8D4;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #6B7280;
+            margin-top: 4rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #EC4899;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .membership-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plan-features {
+                text-align: center;
+            }
+
+            .plan-features ul {
+                display: inline-block;
+                text-align: left;
+            }
+
+            .payments-table {
+                font-size: 0.9rem;
+            }
+
+            .payments-table th,
+            .payments-table td {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">CreatorVault</a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="content.html">Content</a></li>
+                <li><a href="account.html">Account</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" id="mobileMenuClose">&times;</button>
+        <a href="index.html">Home</a>
+        <a href="content.html">Content</a>
+        <a href="account.html">Account</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="page-title" id="pageTitle">Account</h1>
+
+        <!-- Tabs -->
+        <div class="tabs" id="tabsContainer">
+            <button class="tab-button active" data-tab="login">Login/Register</button>
+            <button class="tab-button" data-tab="membership">Membership</button>
+            <button class="tab-button" data-tab="dashboard">Dashboard</button>
+            <button class="tab-button" data-tab="payment">Payment</button>
+        </div>
+
+        <!-- Login/Register Tab -->
+        <div id="login" class="tab-content active">
+            <div class="card">
+                <div id="loginForm">
+                    <h2 style="margin-bottom: 2rem; text-align: center; color: #111827;">Login</h2>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password">
+                    </div>
+                    <div id="loginError" class="alert alert-error error-message"></div>
+                    <div class="form-buttons">
+                        <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                        <button class="btn btn-secondary" onclick="switchToRegister()">Register</button>
+                    </div>
+                </div>
+
+                <div id="registerForm" style="display: none;">
+                    <h2 style="margin-bottom: 2rem; text-align: center; color: #111827;">Register</h2>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="registerName" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Enter your password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="registerConfirmPassword" placeholder="Confirm your password">
+                    </div>
+                    <div id="registerError" class="alert alert-error error-message"></div>
+                    <div class="form-buttons">
+                        <button class="btn btn-primary" onclick="handleRegister()">Register</button>
+                        <button class="btn btn-secondary" onclick="switchToLogin()">Back to Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Membership Tab -->
+        <div id="membership" class="tab-content">
+            <div class="membership-grid" id="membershipGrid">
+                <!-- Plans will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <div id="dashboardContent" style="display: none;">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Full Name</div>
+                        <div class="dashboard-value" id="dashName">-</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Email</div>
+                        <div class="dashboard-value" id="dashEmail">-</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Membership</div>
+                        <div class="dashboard-value premium" id="dashMembership">-</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Expiry Date</div>
+                        <div class="dashboard-value" id="dashExpiry">-</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <a href="content.html" class="btn btn-primary" style="display: inline-block; margin-right: 1rem;">Browse Content</a>
+                    <button class="btn btn-secondary" onclick="goToPayment()" style="display: inline-block;">Upgrade Membership</button>
+                </div>
+
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Recent Payments</h3>
+                <table class="payments-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody">
+                        <tr><td colspan="4" class="no-data">No payments yet</td></tr>
+                    </tbody>
+                </table>
+
+                <button class="btn btn-logout" onclick="handleLogout()" style="display: block; margin-top: 2rem; width: auto; margin-left: auto; margin-right: auto;">Logout</button>
+            </div>
+
+            <div id="dashboardNotLoggedIn" style="text-align: center; padding: 3rem;">
+                <p style="font-size: 1.125rem; color: #6B7280; margin-bottom: 2rem;">Please login to view your dashboard.</p>
+                <button class="btn btn-primary" onclick="switchTab('login')" style="display: inline-block;">Go to Login</button>
+            </div>
+        </div>
+
+        <!-- Payment Tab -->
+        <div id="payment" class="tab-content">
+            <div id="paymentContent" style="display: none;">
+                <div class="payment-info">
+                    <h2 style="margin-bottom: 1.5rem;">Payment Details</h2>
+                    <div class="qr-code" id="qrCode">
+                        <img id="qrImage" alt="QR Code">
+                    </div>
+                    <div class="payment-details">
+                        <div class="payment-detail">
+                            <span class="payment-detail-label">UPI ID:</span>
+                            <span class="payment-detail-value" id="paymentUPI">-</span>
+                        </div>
+                        <div class="payment-detail">
+                            <span class="payment-detail-label">Account Holder:</span>
+                            <span class="payment-detail-value" id="paymentHolder">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem;">Submit Payment</h3>
+                    <div class="form-group">
+                        <label>Selected Plan</label>
+                        <select id="paymentPlan" style="width: 100%; padding: 0.875rem; border: 1px solid #F9A8D4; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem;">
+                            <option value="">Choose a plan</option>
+                            <option value="Basic">Basic - $9/month</option>
+                            <option value="Premium">Premium - $19/month</option>
+                            <option value="VIP">VIP - $49/month</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Transaction ID</label>
+                        <input type="text" id="paymentTransactionId" placeholder="Enter transaction ID from your bank">
+                    </div>
+                    <div class="form-group">
+                        <label>Screenshot URL (Optional)</label>
+                        <input type="url" id="paymentScreenshot" placeholder="Enter screenshot URL">
+                    </div>
+                    <div id="paymentError" class="alert alert-error error-message"></div>
+                    <div id="paymentSuccess" class="alert alert-success success-message"></div>
+                    <button class="btn btn-primary" onclick="submitPayment()" style="width: 100%;">Submit Payment</button>
+                </div>
+            </div>
+
+            <div id="paymentNotLoggedIn" style="text-align: center; padding: 3rem;">
+                <p style="font-size: 1.125rem; color: #6B7280; margin-bottom: 2rem;">Please login to make a payment.</p>
+                <button class="btn btn-primary" onclick="switchTab('login')" style="display: inline-block;">Go to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">CreatorVault</div>
+        <div style="font-size: 0.95rem;">Premium content platform for creators</div>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+
+        // Mobile Menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            mobileOverlay.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+        });
+
+        mobileOverlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+        });
+
+        // Tab Switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                switchTab(e.target.getAttribute('data-tab'));
+            });
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'membership') loadMembershipPlans();
+            if (tabName === 'dashboard') loadDashboard();
+            if (tabName === 'payment') loadPaymentSettings();
+        }
+
+        function switchTab(tabName) {
+            const button = document.querySelector(`[data-tab="${tabName}"]`);
+            const content = document.getElementById(tabName);
+            
+            if (button && content) {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                button.classList.add('active');
+                content.classList.add('active');
+
+                if (tabName === 'membership') loadMembershipPlans();
+                if (tabName === 'dashboard') loadDashboard();
+                if (tabName === 'payment') loadPaymentSettings();
+            }
+        }
+
+        // Get session
+        function getSession() {
+            const session = localStorage.getItem('session');
+            return session ? JSON.parse(session) : null;
+        }
+
+        // Show error
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+        }
+
+        // Show success
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+        }
+
+        // Login
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showError('loginError', 'Please fill in all fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+
+                const users = await response.json();
+
+                if (users.length === 0) {
+                    showError('loginError', 'User not found');
+                    return;
+                }
+
+                const user = users[0];
+
+                if (user.password !== password) {
+                    showError('loginError', 'Incorrect password');
+                    return;
+                }
+
+                // Save session
+                const session = {
+                    user_id: user.id,
+                    user_name: user.full_name,
+                    user_email: user.email,
+                    membership: user.membership,
+                    role: user.role
+                };
+
+                localStorage.setItem('session', JSON.stringify(session));
+
+                // Clear form
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').style.display = 'none';
+
+                // Switch to dashboard
+                switchTab('dashboard');
+            } catch (error) {
+                console.error('Error logging in:', error);
+                showError('loginError', 'Error logging in. Please try again.');
+            }
+        }
+
+        // Register
+        async function handleRegister() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (!name || !email || !password || !confirmPassword) {
+                showError('registerError', 'Please fill in all fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('registerError', 'Passwords do not match');
+                return;
+            }
+
+            try {
+                // Check if email exists
+                const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(email)}`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+
+                const existingUsers = await checkResponse.json();
+
+                if (existingUsers.length > 0) {
+                    showError('registerError', 'Email already registered');
+                    return;
+                }
+
+                // Create user
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        full_name: name,
+                        email: email,
+                        password: password,
+                        membership: 'free',
+                        role: 'user'
+                    })
+                });
+
+                if (!response.ok) {
+                    showError('registerError', 'Error creating account');
+                    return;
+                }
+
+                const newUser = await response.json();
+
+                // Save session
+                const session = {
+                    user_id: newUser[0].id,
+                    user_name: newUser[0].full_name,
+                    user_email: newUser[0].email,
+                    membership: 'free',
+                    role: 'user'
+                };
+
+                localStorage.setItem('session', JSON.stringify(session));
+
+                // Clear form
+                document.getElementById('registerName').value = '';
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerConfirmPassword').value = '';
+                document.getElementById('registerError').style.display = 'none';
+
+                // Switch to dashboard
+                switchTab('dashboard');
+            } catch (error) {
+                console.error('Error registering:', error);
+                showError('registerError', 'Error creating account');
+            }
+        }
+
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem('session');
+            switchTab('login');
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // Switch forms
+        function switchToRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function switchToLogin() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        // Load membership plans
+        function loadMembershipPlans() {
+            const plans = [
+                { name: 'Basic', price: 9, features: ['Access to basic content', 'Monthly subscription'] },
+                { name: 'Premium', price: 19, features: ['Full content access', 'Priority support', 'Monthly subscription'] },
+                { name: 'VIP', price: 49, features: ['Exclusive content', '24/7 priority support', 'Special features', 'Monthly subscription'] }
+            ];
+
+            const grid = document.getElementById('membershipGrid');
+            grid.innerHTML = plans.map(plan => `
+                <div class="plan-card">
+                    <div class="plan-name">${plan.name}</div>
+                    <div class="plan-price">$${plan.price}<span style="font-size: 0.6em; color: #6B7280;">/month</span></div>
+                    <ul class="plan-features">
+                        ${plan.features.map(f => `<li>✓ ${f}</li>`).join('')}
+                    </ul>
+                    <button class="btn btn-primary" onclick="selectPlanAndPay('${plan.name}')" style="width: 100%;">Subscribe Now</button>
+                </div>
+            `).join('');
+        }
+
+        // Select plan and go to payment
+        function selectPlanAndPay(plan) {
+            const session = getSession();
+            if (!session) {
+                switchTab('login');
+                return;
+            }
+            switchTab('payment');
+            document.getElementById('paymentPlan').value = plan;
+        }
+
+        function goToPayment() {
+            switchTab('payment');
+        }
+
+        // Load dashboard
+        async function loadDashboard() {
+            const session = getSession();
+
+            if (!session) {
+                document.getElementById('dashboardContent').style.display = 'none';
+                document.getElementById('dashboardNotLoggedIn').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.getElementById('dashboardNotLoggedIn').style.display = 'none';
+
+            document.getElementById('dashName').textContent = session.user_name || '-';
+            document.getElementById('dashEmail').textContent = session.user_email || '-';
+            document.getElementById('dashMembership').textContent = session.membership?.toUpperCase() || 'FREE';
+
+            if (session.membership === 'premium') {
+                try {
+                    const response = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${session.user_id}`, {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY
+                        }
+                    });
+                    const users = await response.json();
+                    if (users[0]?.membership_expiry) {
+                        document.getElementById('dashExpiry').textContent = new Date(users[0].membership_expiry).toLocaleDateString();
+                    }
+                } catch (error) {
+                    console.error('Error loading expiry:', error);
+                }
+            } else {
+                document.getElementById('dashExpiry').textContent = 'N/A';
+            }
+
+            // Load payments
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/payments?user_id=eq.${session.user_id}&order=created_at.desc&limit=5`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const payments = await response.json();
+
+                const tbody = document.getElementById('paymentsBody');
+                if (payments.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="no-data">No payments yet</td></tr>';
+                } else {
+                    tbody.innerHTML = payments.map(p => `
+                        <tr>
+                            <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                            <td>${p.plan}</td>
+                            <td><span style="padding: 0.3rem 0.8rem; border-radius: 50px; background: ${p.status === 'approved' ? '#D1FAE5' : p.status === 'rejected' ? '#FEE2E2' : '#FEF3C7'}; color: ${p.status === 'approved' ? '#065F46' : p.status === 'rejected' ? '#7F1D1D' : '#92400E'};  font-size: 0.85rem; font-weight: 600;">${p.status.toUpperCase()}</span></td>
+                            <td>$${p.plan === 'Basic' ? '9' : p.plan === 'Premium' ? '19' : '49'}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading payments:', error);
+            }
+        }
+
+        // Load payment settings
+        async function loadPaymentSettings() {
+            const session = getSession();
+
+            if (!session) {
+                document.getElementById('paymentContent').style.display = 'none';
+                document.getElementById('paymentNotLoggedIn').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('paymentContent').style.display = 'block';
+            document.getElementById('paymentNotLoggedIn').style.display = 'none';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/payment_settings?limit=1`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const settings = await response.json();
+
+                if (settings.length > 0) {
+                    const setting = settings[0];
+                    document.getElementById('paymentUPI').textContent = setting.upi_id || '-';
+                    document.getElementById('paymentHolder').textContent = setting.account_holder || '-';
+                    
+                    if (setting.qr_image_url) {
+                        document.getElementById('qrImage').src = setting.qr_image_url;
+                    }
+                } else {
+                    document.getElementById('paymentUPI').textContent = 'Not configured';
+                    document.getElementById('paymentHolder').textContent = 'Not configured';
+                }
+            } catch (error) {
+                console.error('Error loading payment settings:', error);
+            }
+        }
+
+        // Submit payment
+        async function submitPayment() {
+            const session = getSession();
+
+            if (!session) {
+                switchTab('login');
+                return;
+            }
+
+            const plan = document.getElementById('paymentPlan').value;
+            const transactionId = document.getElementById('paymentTransactionId').value.trim();
+            const screenshot = document.getElementById('paymentScreenshot').value.trim();
+
+            document.getElementById('paymentError').style.display = 'none';
+            document.getElementById('paymentSuccess').style.display = 'none';
+
+            if (!plan || !transactionId) {
+                showError('paymentError', 'Please select a plan and enter transaction ID');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/payments`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: session.user_id,
+                        user_name: session.user_name,
+                        user_email: session.user_email,
+                        plan: plan,
+                        transaction_id: transactionId,
+                        screenshot_url: screenshot || null,
+                        status: 'pending'
+                    })
+                });
+
+                if (!response.ok) {
+                    showError('paymentError', 'Error submitting payment');
+                    return;
+                }
+
+                document.getElementById('paymentPlan').value = '';
+                document.getElementById('paymentTransactionId').value = '';
+                document.getElementById('paymentScreenshot').value = '';
+
+                showSuccess('paymentSuccess', 'Payment submitted successfully! Please wait for admin approval.');
+            } catch (error) {
+                console.error('Error submitting payment:', error);
+                showError('paymentError', 'Error submitting payment');
+            }
+        }
+
+        // Initialize page
+        window.addEventListener('load', () => {
+            const session = getSession();
+            if (session) {
+                document.getElementById('pageTitle').textContent = `Welcome, ${session.user_name}!`;
+                document.querySelector('[data-tab="dashboard"]').textContent = 'Dashboard';
+            }
+        });
+    </script>
+</body>
+</html>
