@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - CreatorVault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FFF8FC;
+            color: #111827;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 248, 252, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(236, 72, 153, 0.1);
+            padding: 1.25rem 2rem;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #EC4899;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: #111827;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: #EC4899;
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .access-denied {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+        }
+
+        .access-denied h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #7F1D1D;
+        }
+
+        .access-denied p {
+            color: #6B7280;
+            margin-bottom: 2rem;
+        }
+
+        .btn-home {
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid #F9A8D4;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+        }
+
+        .tab-button.active {
+            color: #EC4899;
+            border-bottom-color: #EC4899;
+        }
+
+        .tab-button:hover {
+            color: #EC4899;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(236, 72, 153, 0.15);
+        }
+
+        .dashboard-label {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dashboard-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Table */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .admin-table th {
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #F9A8D4;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover {
+            background: #FFF8FC;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-approve {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+        }
+
+        .btn-approve:hover {
+            background: #A7F3D0;
+        }
+
+        .btn-reject {
+            background: #FEE2E2;
+            color: #7F1D1D;
+            border: 1px solid #FCA5A5;
+        }
+
+        .btn-reject:hover {
+            background: #FECACA;
+        }
+
+        .btn-delete {
+            background: #FEE2E2;
+            color: #7F1D1D;
+            border: 1px solid #FCA5A5;
+        }
+
+        .btn-delete:hover {
+            background: #FECACA;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Form */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid #F9A8D4;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #EC4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid #F9A8D4;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #6EE7B7;
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #7F1D1D;
+            border: 1px solid #FCA5A5;
+        }
+
+        .success-message,
+        .error-message {
+            display: none;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #6B7280;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #F9A8D4;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #6B7280;
+            margin-top: 4rem;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #EC4899;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-table {
+                font-size: 0.9rem;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.75rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 1.75rem;
+            }
+
+            .tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">CreatorVault Admin</a>
+            <div class="navbar-links">
+                <a href="index.html">Home</a>
+                <button class="btn-logout" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div id="adminPanel" style="display: none;">
+            <h1 class="page-title">Admin Dashboard</h1>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="dashboard">Dashboard</button>
+                <button class="tab-button" data-tab="settings">Payment Settings</button>
+                <button class="tab-button" data-tab="add-content">Add Content</button>
+                <button class="tab-button" data-tab="manage-photos">Manage Photos</button>
+                <button class="tab-button" data-tab="manage-videos">Manage Videos</button>
+                <button class="tab-button" data-tab="payments">Payments</button>
+                <button class="tab-button" data-tab="users">Users</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Total Photos</div>
+                        <div class="dashboard-value" id="totalPhotos">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Total Videos</div>
+                        <div class="dashboard-value" id="totalVideos">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Premium Content</div>
+                        <div class="dashboard-value" id="premiumContent">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-label">Pending Payments</div>
+                        <div class="dashboard-value" id="pendingPayments">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="card">
+                    <h2 style="margin-bottom: 2rem;">Payment Settings</h2>
+                    <div class="form-group">
+                        <label>UPI ID</label>
+                        <input type="text" id="upiId" placeholder="e.g., sophia@okhdfcbank">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Holder Name</label>
+                        <input type="text" id="accountHolder" placeholder="e.g., Sophia Bennett">
+                    </div>
+                    <div class="form-group">
+                        <label>QR Code Image URL</label>
+                        <input type="url" id="qrImageUrl" placeholder="https://example.com/qr-code.png">
+                    </div>
+                    <div id="settingsSuccess" class="alert alert-success success-message"></div>
+                    <div id="settingsError" class="alert alert-error error-message"></div>
+                    <button class="btn btn-primary" onclick="savePaymentSettings()" style="width: 100%;">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Add Content Tab -->
+            <div id="add-content" class="tab-content">
+                <div class="card">
+                    <h2 style="margin-bottom: 2rem;">Add New Content</h2>
+                    
+                    <div class="form-group">
+                        <label style="display: flex; gap: 1rem; align-items: center; cursor: pointer;">
+                            <input type="radio" name="contentType" value="photo" checked onchange="switchContentType('photo')"> Photo
+                            <input type="radio" name="contentType" value="video" onchange="switchContentType('video')"> Video
+                        </label>
+                    </div>
+
+                    <!-- Photo Form -->
+                    <div id="photoForm">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="photoTitle" placeholder="Enter photo title">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="photoDescription" placeholder="Enter description" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="url" id="photoUrl" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="photoCategory" placeholder="e.g., Fashion, Lifestyle">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="photoPremium">
+                            <label for="photoPremium" style="margin-bottom: 0;">Mark as Premium</label>
+                        </div>
+                        <div id="photoSuccess" class="alert alert-success success-message"></div>
+                        <div id="photoError" class="alert alert-error error-message"></div>
+                        <button class="btn btn-primary" onclick="addPhoto()" style="width: 100%;">Add Photo</button>
+                    </div>
+
+                    <!-- Video Form -->
+                    <div id="videoForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="videoTitle" placeholder="Enter video title">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="videoDescription" placeholder="Enter description" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Video URL</label>
+                            <input type="url" id="videoUrl" placeholder="https://example.com/video.mp4">
+                        </div>
+                        <div class="form-group">
+                            <label>Thumbnail URL</label>
+                            <input type="url" id="videoThumbnail" placeholder="https://example.com/thumbnail.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (seconds)</label>
+                            <input type="number" id="videoDuration" placeholder="e.g., 120">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="videoCategory" placeholder="e.g., Tutorial, Behind the scenes">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="videoPremium">
+                            <label for="videoPremium" style="margin-bottom: 0;">Mark as Premium</label>
+                        </div>
+                        <div id="videoSuccess" class="alert alert-success success-message"></div>
+                        <div id="videoError" class="alert alert-error error-message"></div>
+                        <button class="btn btn-primary" onclick="addVideo()" style="width: 100%;">Add Video</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Photos Tab -->
+            <div id="manage-photos" class="tab-content">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Premium</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="photosBody">
+                        <tr><td colspan="4" class="no-data">Loading photos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Manage Videos Tab -->
+            <div id="manage-videos" class="tab-content">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Duration</th>
+                            <th>Premium</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="videosBody">
+                        <tr><td colspan="5" class="no-data">Loading videos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Payments Tab -->
+            <div id="payments" class="tab-content">
+                <h2 style="margin-bottom: 2rem;">Pending Payments</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Plan</th>
+                            <th>Transaction ID</th>
+                            <th>Screenshot</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsBody">
+                        <tr><td colspan="7" class="no-data">Loading payments...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Membership</th>
+                            <th>Expiry Date</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersBody">
+                        <tr><td colspan="5" class="no-data">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Access Denied -->
+        <div id="accessDenied" class="access-denied">
+            <h2>Access Denied</h2>
+            <p>You do not have permission to access the admin panel. Only administrators can view this page.</p>
+            <a href="index.html" class="btn-home">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">CreatorVault Admin</div>
+        <div style="font-size: 0.95rem;">Admin Panel - Premium content management system</div>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+
+        // Check admin access
+        function checkAdminAccess() {
+            const session = localStorage.getItem('session');
+            if (!session) {
+                showAccessDenied();
+                return false;
+            }
+
+            const user = JSON.parse(session);
+            if (user.role !== 'admin') {
+                showAccessDenied();
+                return false;
+            }
+
+            return true;
+        }
+
+        function showAccessDenied() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('accessDenied').style.display = 'block';
+        }
+
+        // Tab Switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const tabName = e.target.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                e.target.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+
+                if (tabName === 'manage-photos') loadPhotos();
+                if (tabName === 'manage-videos') loadVideos();
+                if (tabName === 'payments') loadPendingPayments();
+                if (tabName === 'users') loadUsers();
+            });
+        });
+
+        function switchContentType(type) {
+            if (type === 'photo') {
+                document.getElementById('photoForm').style.display = 'block';
+                document.getElementById('videoForm').style.display = 'none';
+            } else {
+                document.getElementById('photoForm').style.display = 'none';
+                document.getElementById('videoForm').style.display = 'block';
+            }
+        }
+
+        // Show messages
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+            }
+        }
+
+        // Load Dashboard
+        async function loadDashboard() {
+            try {
+                const photosRes = await fetch(`${SUPABASE_URL}/rest/v1/photos?select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Range': '0-0'
+                    }
+                });
+                const totalPhotos = photosRes.headers.get('content-range')?.split('/')[1] || 0;
+                document.getElementById('totalPhotos').textContent = totalPhotos;
+
+                const videosRes = await fetch(`${SUPABASE_URL}/rest/v1/videos?select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Range': '0-0'
+                    }
+                });
+                const totalVideos = videosRes.headers.get('content-range')?.split('/')[1] || 0;
+                document.getElementById('totalVideos').textContent = totalVideos;
+
+                const premiumRes = await fetch(`${SUPABASE_URL}/rest/v1/photos?premium=eq.true&select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Range': '0-0'
+                    }
+                });
+                const premiumPhotos = premiumRes.headers.get('content-range')?.split('/')[1] || 0;
+
+                const premiumVideosRes = await fetch(`${SUPABASE_URL}/rest/v1/videos?premium=eq.true&select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Range': '0-0'
+                    }
+                });
+                const premiumVideos = premiumVideosRes.headers.get('content-range')?.split('/')[1] || 0;
+
+                const totalPremium = parseInt(premiumPhotos) + parseInt(premiumVideos);
+                document.getElementById('premiumContent').textContent = totalPremium;
+
+                const paymentsRes = await fetch(`${SUPABASE_URL}/rest/v1/payments?status=eq.pending&select=count`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Range': '0-0'
+                    }
+                });
+                const pendingPayments = paymentsRes.headers.get('content-range')?.split('/')[1] || 0;
+                document.getElementById('pendingPayments').textContent = pendingPayments;
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Save Payment Settings
+        async function savePaymentSettings() {
+            const upiId = document.getElementById('upiId').value.trim();
+            const accountHolder = document.getElementById('accountHolder').value.trim();
+            const qrImageUrl = document.getElementById('qrImageUrl').value.trim();
+
+            document.getElementById('settingsSuccess').style.display = 'none';
+            document.getElementById('settingsError').style.display = 'none';
+
+            if (!upiId || !accountHolder || !qrImageUrl) {
+                showError('settingsError', 'Please fill in all fields');
+                return;
+            }
+
+            try {
+                const getRes = await fetch(`${SUPABASE_URL}/rest/v1/payment_settings?limit=1`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const existing = await getRes.json();
+
+                let response;
+                if (existing.length > 0) {
+                    response = await fetch(`${SUPABASE_URL}/rest/v1/payment_settings?id=eq.${existing[0].id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            upi_id: upiId,
+                            account_holder: accountHolder,
+                            qr_image_url: qrImageUrl
+                        })
+                    });
+                } else {
+                    response = await fetch(`${SUPABASE_URL}/rest/v1/payment_settings`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            upi_id: upiId,
+                            account_holder: accountHolder,
+                            qr_image_url: qrImageUrl
+                        })
+                    });
+                }
+
+                if (!response.ok) {
+                    showError('settingsError', 'Error saving settings');
+                    return;
+                }
+
+                showSuccess('settingsSuccess', 'Payment settings saved successfully!');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showError('settingsError', 'Error saving settings');
+            }
+        }
+
+        // Add Photo
+        async function addPhoto() {
+            const title = document.getElementById('photoTitle').value.trim();
+            const description = document.getElementById('photoDescription').value.trim();
+            const url = document.getElementById('photoUrl').value.trim();
+            const category = document.getElementById('photoCategory').value.trim();
+            const premium = document.getElementById('photoPremium').checked;
+
+            document.getElementById('photoSuccess').style.display = 'none';
+            document.getElementById('photoError').style.display = 'none';
+
+            if (!title || !url) {
+                showError('photoError', 'Please fill in all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/photos`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        url,
+                        category,
+                        premium,
+                        views: 0
+                    })
+                });
+
+                if (!response.ok) {
+                    showError('photoError', 'Error adding photo');
+                    return;
+                }
+
+                document.getElementById('photoTitle').value = '';
+                document.getElementById('photoDescription').value = '';
+                document.getElementById('photoUrl').value = '';
+                document.getElementById('photoCategory').value = '';
+                document.getElementById('photoPremium').checked = false;
+
+                showSuccess('photoSuccess', 'Photo added successfully!');
+                loadDashboard();
+            } catch (error) {
+                console.error('Error adding photo:', error);
+                showError('photoError', 'Error adding photo');
+            }
+        }
+
+        // Add Video
+        async function addVideo() {
+            const title = document.getElementById('videoTitle').value.trim();
+            const description = document.getElementById('videoDescription').value.trim();
+            const videoUrl = document.getElementById('videoUrl').value.trim();
+            const thumbnailUrl = document.getElementById('videoThumbnail').value.trim();
+            const duration = parseInt(document.getElementById('videoDuration').value);
+            const category = document.getElementById('videoCategory').value.trim();
+            const premium = document.getElementById('videoPremium').checked;
+
+            document.getElementById('videoSuccess').style.display = 'none';
+            document.getElementById('videoError').style.display = 'none';
+
+            if (!title || !videoUrl || !thumbnailUrl || !duration) {
+                showError('videoError', 'Please fill in all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/videos`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        video_url: videoUrl,
+                        thumbnail_url: thumbnailUrl,
+                        duration,
+                        category,
+                        premium,
+                        views: 0
+                    })
+                });
+
+                if (!response.ok) {
+                    showError('videoError', 'Error adding video');
+                    return;
+                }
+
+                document.getElementById('videoTitle').value = '';
+                document.getElementById('videoDescription').value = '';
+                document.getElementById('videoUrl').value = '';
+                document.getElementById('videoThumbnail').value = '';
+                document.getElementById('videoDuration').value = '';
+                document.getElementById('videoCategory').value = '';
+                document.getElementById('videoPremium').checked = false;
+
+                showSuccess('videoSuccess', 'Video added successfully!');
+                loadDashboard();
+            } catch (error) {
+                console.error('Error adding video:', error);
+                showError('videoError', 'Error adding video');
+            }
+        }
+
+        // Load Photos
+        async function loadPhotos() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/photos?order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const photos = await response.json();
+                const tbody = document.getElementById('photosBody');
+
+                if (photos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="no-data">No photos</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = photos.map(p => `
+                    <tr>
+                        <td>${p.title}</td>
+                        <td>${p.category || '-'}</td>
+                        <td>${p.premium ? '✓ Yes' : 'No'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-delete" onclick="deletePhoto(${p.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading photos:', error);
+            }
+        }
+
+        // Load Videos
+        async function loadVideos() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/videos?order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const videos = await response.json();
+                const tbody = document.getElementById('videosBody');
+
+                if (videos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="no-data">No videos</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = videos.map(v => `
+                    <tr>
+                        <td>${v.title}</td>
+                        <td>${v.category || '-'}</td>
+                        <td>${v.duration}s</td>
+                        <td>${v.premium ? '✓ Yes' : 'No'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-delete" onclick="deleteVideo(${v.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading videos:', error);
+            }
+        }
+
+        // Delete Photo
+        async function deletePhoto(id) {
+            if (!confirm('Are you sure you want to delete this photo?')) return;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/photos?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                loadPhotos();
+                loadDashboard();
+            } catch (error) {
+                console.error('Error deleting photo:', error);
+            }
+        }
+
+        // Delete Video
+        async function deleteVideo(id) {
+            if (!confirm('Are you sure you want to delete this video?')) return;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/videos?id=eq.${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                loadVideos();
+                loadDashboard();
+            } catch (error) {
+                console.error('Error deleting video:', error);
+            }
+        }
+
+        // Load Pending Payments
+        async function loadPendingPayments() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/payments?status=eq.pending&order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const payments = await response.json();
+                const tbody = document.getElementById('paymentsBody');
+
+                if (payments.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="no-data">No pending payments</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = payments.map(p => `
+                    <tr>
+                        <td>${p.user_name}</td>
+                        <td>${p.user_email}</td>
+                        <td>${p.plan}</td>
+                        <td>${p.transaction_id}</td>
+                        <td>${p.screenshot_url ? '<a href="' + p.screenshot_url + '" target="_blank">View</a>' : '-'}</td>
+                        <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-small btn-approve" onclick="approvePayment(${p.id}, ${p.user_id}, '${p.plan}')">Approve</button>
+                                <button class="btn-small btn-reject" onclick="rejectPayment(${p.id})">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading payments:', error);
+            }
+        }
+
+        // Approve Payment
+        async function approvePayment(paymentId, userId, plan) {
+            try {
+                const expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + 30);
+
+                // Update user membership
+                await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${userId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        membership: 'premium',
+                        membership_expiry: expiryDate.toISOString()
+                    })
+                });
+
+                // Update payment status
+                await fetch(`${SUPABASE_URL}/rest/v1/payments?id=eq.${paymentId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: 'approved'
+                    })
+                });
+
+                loadPendingPayments();
+                loadDashboard();
+            } catch (error) {
+                console.error('Error approving payment:', error);
+            }
+        }
+
+        // Reject Payment
+        async function rejectPayment(paymentId) {
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/payments?id=eq.${paymentId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: 'rejected'
+                    })
+                });
+
+                loadPendingPayments();
+                loadDashboard();
+            } catch (error) {
+                console.error('Error rejecting payment:', error);
+            }
+        }
+
+        // Load Users
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/users?order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY
+                    }
+                });
+                const users = await response.json();
+                const tbody = document.getElementById('usersBody');
+
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="no-data">No users</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td>${u.full_name}</td>
+                        <td>${u.email}</td>
+                        <td>${u.membership.toUpperCase()}</td>
+                        <td>${u.membership_expiry ? new Date(u.membership_expiry).toLocaleDateString() : '-'}</td>
+                        <td>${u.role.toUpperCase()}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Logout
+        function handleLogout() {
+            localStorage.removeItem('session');
+            window.location.href = 'index.html';
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            if (checkAdminAccess()) {
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('accessDenied').style.display = 'none';
+                loadDashboard();
+            }
+        });
+    </script>
+</body>
+</html>
